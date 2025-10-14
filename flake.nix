@@ -31,7 +31,7 @@
       };
     in
     {
-      devShells.${system}.default = pkgs.mkShell {
+      devShells.${system}.default = pkgs.mkShell rec {
         buildInputs = with pkgs; [
           python3
           (python3.withPackages (
@@ -59,11 +59,9 @@
 
           # Add necessary paths for dynamic linking
           export LD_LIBRARY_PATH=${
-            pkgs.lib.makeLibraryPath [
+            pkgs.lib.makeLibraryPath ([
               "/run/opengl-driver" # Needed to find libGL.so
-              pkgs.cudatoolkit
-              pkgs.cudaPackages.cudnn
-            ]
+            ] ++ buildInputs)
           }:$LD_LIBRARY_PATH
 
           # Set LIBRARY_PATH to help the linker find the CUDA static libraries
